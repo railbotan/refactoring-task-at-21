@@ -2,35 +2,27 @@ from PIL import Image
 import numpy as np
 
 imgURL = input("Укажите название исходного изображения >> ")
-imgPermission = input("Укажите резрешение исходного изображения >> ")
-img = Image.open(imgURL + '.' + imgPermission)
-arr = np.array(img)
+imgSave = input("Укажите как сохранить изображение >> ")
+img = Image.open(imgURL)
 
-length = len(arr)
+arrImages = np.array(img)
+height = len(arrImages)
+width = len(arrImages[0])
+
 size = int(input("Введите размер мозайки >> "))
 gray = int(input("Введите режим градации серого >> "))
+stepGrey = 256 // (gray - 1)
 
-i = 0
+def sumColor(arr, size, x, y):
+    return np.average(arr[x: x + size, y:y+size])
 
-def sumColor():
-    global n, n1, sum_color
-    for n in range(i, i + size):
-       sum_color += np.sum(arr[n][j:j+size][:])
-    sum_color = sum_color // 100
+def grayColor(arr, size, x, y, sum_color, stepGrey):
+    arr[x: x + size, y:y+size] = int(sum_color // stepGrey) * stepGrey # sum_color - sum_color % gray_step
 
-def grayColor   ():
-    global n, n1
-    for n in range(i, i + size):
-       arr[n][j:j+size][:] = int(sum_color // 50) * 50 // gray
-
-while i < length - 1:
-    j = 0
-    while j < length - 1:
-        sum_color = 0
-        sumColor()
-        grayColor()
-        j = j + size
-    i = i + size
+for x in range(0, width, size):
+    for y in range(0, height, size):
+        sum_color = sumColor(arrImages, size, x, y)
+        grayColor(arrImages, size, x, y, sum_color, stepGrey)
     
-res = Image.fromarray(arr)
-res.save('res.jpg')
+res = Image.fromarray(arrImages)
+res.save(imgSave)
