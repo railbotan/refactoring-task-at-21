@@ -1,7 +1,9 @@
 from PIL import Image
 import numpy as np
 
-img = Image.open("img2.jpg")
+url = input("Название изображения: ")
+name = input("Имя результата обработки: ")
+img = Image.open(url)
 pixels = np.array(img)
 height = len(pixels)
 width = len(pixels[1])
@@ -27,4 +29,4 @@ def process_pixels():
 
 process_pixels()
 res = Image.fromarray(pixels)
-res.save('res.jpg')
+res.save(name)
