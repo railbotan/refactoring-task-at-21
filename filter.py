@@ -1,28 +1,33 @@
 from PIL import Image
 import numpy as np
-img = Image.open("img2.jpg")
+
+
+def fill_square(inp_arr, inp_square_side_size, inp_grayscale_step, inp_coordinates_of_square):
+    new_color = int(np.average(inp_arr[
+               inp_coordinates_of_square[0]:inp_coordinates_of_square[0] + inp_square_side_size,
+               inp_coordinates_of_square[1]:inp_coordinates_of_square[1] + inp_square_side_size])
+                    // inp_grayscale_step) * inp_grayscale_step
+    inp_arr[
+        inp_coordinates_of_square[0]:inp_coordinates_of_square[0] + inp_square_side_size,
+        inp_coordinates_of_square[1]:inp_coordinates_of_square[1] + inp_square_side_size] = \
+        new_color
+
+
+def filter_the_image(inp_arr, inp_max_y, inp_max_x, inp_square_side_size, inp_grayscale_steps):
+    grayscale_step = 255 // inp_grayscale_steps
+    coordinates_of_squares = [[y, x]
+                              for y in np.arange(0, inp_max_y, inp_square_side_size)
+                              for x in np.arange(0, inp_max_x, inp_square_side_size)]
+    for i in coordinates_of_squares:
+        fill_square(inp_arr, inp_square_side_size, grayscale_step, i) #вообще не понял как это сделать
+
+
+img = Image.open(img2.jpg)
 arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a - 11:
-    j = 0
-    while j < a1 - 11:
-        s = 0
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                n1 = arr[n][n1][0]
-                n2 = arr[n][n1][1]
-                n3 = arr[n][n1][2]
-                M = n1 + n2 + n3
-                s += M
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
+max_y = len(arr)
+max_x = len(arr[1])
+square_side_size = 10
+grayscale_steps = 5
+filter_the_image(arr, max_y, max_x, square_side_size, grayscale_steps)
 res = Image.fromarray(arr)
 res.save('res.jpg')
