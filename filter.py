@@ -1,7 +1,9 @@
 from PIL import Image
 import numpy as np
 
-img = Image.open("img2.jpg")
+imgURL = input("Укажите название исходного изображения >> ")
+imgPermission = input("Укажите резрешение исходного изображения >> ")
+img = Image.open(imgURL + '.' + imgPermission)
 arr = np.array(img)
 
 length = len(arr)
@@ -31,5 +33,4 @@ while i < length - 1:
     i = i + size
     
 res = Image.fromarray(arr)
-res.show()
 res.save('res.jpg')
