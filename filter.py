@@ -1,32 +1,38 @@
 from PIL import Image
 import numpy as np
 
-url = input("Название изображения: ")
-name = input("Имя результата обработки: ")
-img = Image.open(url)
-pixels = np.array(img)
-height = len(pixels)
-width = len(pixels[1])
-mosaic_size = int(input("Размер мозаики: "))
-color_amount = int(input("Кол-во оттенков серого: "))
+
+def main():
+    url = input("Название изображения: ")
+    name = input("Имя результата обработки: ")
+    img = Image.open(url)
+    pixels = np.array(img)
+    mosaic_size = int(input("Размер мозаики: "))
+    color_amount = int(input("Кол-во оттенков серого: "))
+    pixels = process_pixels(pixels, mosaic_size, color_amount)
+    res = Image.fromarray(pixels)
+    res.save(name)
 
 
-def find_average(x, y):
-    return np.average(pixels[x:x + mosaic_size, y:y + mosaic_size])
-
-
-def change_pixels(x, y, average):
+def process_pixels(pixels, mosaic_size, color_amount):
+    height = len(pixels)
+    width = len(pixels[1])
     gray_step = 255 // (color_amount - 1)
-    pixels[x:x + mosaic_size, y:y + mosaic_size] = int(average // gray_step) * gray_step
-
-
-def process_pixels():
     for x in range(0, width, mosaic_size):
         for y in range(0, height, mosaic_size):
-            average = find_average(x, y)
-            change_pixels(x, y, average)
+            average = find_average(pixels, x, y, mosaic_size)
+            pixels = change_pixels(pixels, x, y, average, mosaic_size, gray_step)
+
+    return pixels
 
 
-process_pixels()
-res = Image.fromarray(pixels)
-res.save(name)
+def find_average(pixels, x, y, length):
+    return np.average(pixels[x:x + length, y:y + length])
+
+
+def change_pixels(pixels, x, y, average, length, gray_step):
+    pixels[x:x + length, y:y + length] = int(average // gray_step) * gray_step
+    return pixels
+
+
+main()
