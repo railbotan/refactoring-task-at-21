@@ -1,6 +1,8 @@
 from PIL import Image
 import numpy as np
-img = Image.open("img2.jpg")
+file_name = input("Enter the file name ")
+file_name_updated = input("Save as... ")
+img = Image.open(file_name)
 rgb_table = np.array(img)
 height = len(rgb_table)
 width = len(rgb_table[1])
@@ -13,12 +15,11 @@ def count_average_brightness(_i, _j):
 
 
 def applying_the_filter(_i, _j, _average_brightness):
-        rgb_table[_i: _i + mosaic_size, _j: _j + mosaic_size] = int(_average_brightness // grayscale_value)\
-                                                                * grayscale_value
+        rgb_table[_i: _i + mosaic_size, _j: _j + mosaic_size] = int(_average_brightness // grayscale_value) * grayscale_value
 
 
 for i in range(0, height, mosaic_size):
     for j in range(0, width, mosaic_size):
         applying_the_filter(i, j, count_average_brightness(i, j))
 res = Image.fromarray(rgb_table)
-res.save('res.jpg')
+res.save(file_name_updated)
