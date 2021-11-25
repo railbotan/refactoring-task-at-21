@@ -1,28 +1,25 @@
 from PIL import Image
 import numpy as np
-img = Image.open("img2.jpg")
-arr = np.array(img)
-a = len(arr)
-a1 = len(arr[1])
-i = 0
-while i < a - 11:
-    j = 0
-    while j < a1 - 11:
-        s = 0
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                n1 = arr[n][n1][0]
-                n2 = arr[n][n1][1]
-                n3 = arr[n][n1][2]
-                M = n1 + n2 + n3
-                s += M
-        s = int(s // 100)
-        for n in range(i, i + 10):
-            for n1 in range(j, j + 10):
-                arr[n][n1][0] = int(s // 50) * 50
-                arr[n][n1][1] = int(s // 50) * 50
-                arr[n][n1][2] = int(s // 50) * 50
-        j = j + 10
-    i = i + 10
-res = Image.fromarray(arr)
-res.save('res.jpg')
+file_name = input("Enter the file name ")
+file_name_updated = input("Save as... ")
+img = Image.open(file_name)
+rgb_table = np.array(img)
+height = len(rgb_table)
+width = len(rgb_table[1])
+mosaic_size = int(input("Enter the mosaic size "))
+grayscale_value = int(input("Enter the grayscale value "))
+
+
+def count_average_brightness(_i, _j):
+        return np.average(rgb_table[_i: _i + mosaic_size, _j: _j + mosaic_size])
+
+
+def applying_the_filter(_i, _j, _average_brightness):
+        rgb_table[_i: _i + mosaic_size, _j: _j + mosaic_size] = int(_average_brightness // grayscale_value) * grayscale_value
+
+
+for i in range(0, height, mosaic_size):
+    for j in range(0, width, mosaic_size):
+        applying_the_filter(i, j, count_average_brightness(i, j))
+res = Image.fromarray(rgb_table)
+res.save(file_name_updated)
